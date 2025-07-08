@@ -1,0 +1,50 @@
+modules:
+  bitbucket:workspaceSettingsMenuPage:
+    - key: bitbucket-forge-app
+      resource: main
+#      resolver:
+#        function: resolver
+      title: bitbucket-forge
+
+#  function:
+#    - key: resolver
+#      handler: index.handler
+#    - key: onInstallHandler
+#      handler: index.onInstallHandler
+#    - key: onUpgradeHandler
+#      handler: index.onUpgradeHandler
+
+  trigger:
+    - key: remote-comment-trigger-boot
+      endpoint: remote-events-node
+      events:
+        - avi:forge:installed:app
+  endpoint:
+    - key: remote-events-node
+      remote: remote-app-node
+      route:
+        path: /webhook
+      auth:
+        appSystemToken:
+          enabled: true
+
+resources:
+  - key: main
+    path: static/hello-world/build
+
+permissions:
+  scopes:
+    - read:app-system-token
+    - read:repository:bitbucket
+    - read:project:bitbucket
+
+remotes:
+  - key: remote-app-node
+    baseUrl: https://5b9ce8904bb8.ngrok-free.app
+
+app:
+  runtime:
+    name: nodejs22.x
+    memoryMB: 256
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/521ae00e-1689-4c52-b3a8-bcaee59cfefc
